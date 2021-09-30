@@ -43,6 +43,15 @@ class UserController extends AbstractController
             $password = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
 
+            // If user is 'ROLE_ADMIN' in form, he's also 'ROLE_USER'
+            if ($user->getRoles() && $user->getRoles()[0] === 'ROLE_ADMIN')
+            {
+                $user->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
+            }
+            else {
+                $user->setRoles(['ROLE_USER']);
+            }
+
             $em->persist($user);
             $em->flush();
 
@@ -70,6 +79,15 @@ class UserController extends AbstractController
 
             //$password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
             $password = $encoder->encodePassword($user, $user->getPassword());
+
+            // If user is 'ROLE_ADMIN' in form, he's also 'ROLE_USER'
+            if ($user->getRoles() && $user->getRoles()[0] === 'ROLE_ADMIN')
+            {
+                $user->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
+            }
+            else {
+                $user->setRoles(['ROLE_USER']);
+            }
 
             $user->setPassword($password);
 
