@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 //use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,22 @@ class TaskController extends AbstractController
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findAll()]);
+//        dump($this->getDoctrine()->getRepository('App:Task')->findBy(['isDone' => 0]));
+//        exit;
+
+        return $this->render('task/list.html.twig', [
+            'tasks' => $this->getDoctrine()->getRepository('App:Task')->findBy(['isDone' => 0])
+        ]);
+    }
+
+    /**
+     * @Route("/finished-tasks", name="finished_task_list")
+     */
+    public function listFinishedAction()
+    {
+        return $this->render('task/list.html.twig', [
+            'tasks' => $this->getDoctrine()->getRepository('App:Task')->findBy(['isDone' => 1])
+        ]);
     }
 
     /**
@@ -31,6 +47,12 @@ class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+
+            //dump($this->getUser());
+            //exit;
+
+
+            $task->setUser($this->getUser());
 
             $em->persist($task);
             $em->flush();

@@ -39,6 +39,16 @@ class User implements UserInterface
      */
     private $email;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="user")
+     */
+    private $tasks;
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $roles;
+
     public function getId()
     {
         return $this->id;
@@ -79,12 +89,69 @@ class User implements UserInterface
         $this->email = $email;
     }
 
+//    public function getRoles()
+//    {
+//        return array('ROLE_USER');
+//    }
+
+    /**
+     * @return mixed
+     */
     public function getRoles()
     {
-        return array('ROLE_USER');
+        return $this->roles;
+    }
+
+    /**
+     * @param mixed $roles
+     */
+    public function setRoles($roles): void
+    {
+        $this->roles = $roles;
     }
 
     public function eraseCredentials()
     {
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+
+
+//    /**
+//     * @param mixed $tasks
+//     */
+//    public function setTasks($tasks): void
+//    {
+//        $this->tasks = $tasks;
+//    }
+
+//    public function addTask(Task $task): self
+//    {
+//        if (!$this->tasks->contains($task)) {
+//            $this->tasks[] = $task;
+//            $task->setAuthor($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeTask(Task $task): self
+//    {
+//        if ($this->tasks->contains($task)) {
+//            $this->tasks->removeElement($task);
+//            // set the owning side to null (unless already changed)
+//            if ($task->getAuthor() === $this) {
+//                $task->setAuthor(null);
+//            }
+//        }
+//
+//        return $this;
+//    }
 }
