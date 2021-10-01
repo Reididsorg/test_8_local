@@ -4,6 +4,14 @@
 
 {% block body %}
     <div class="row">
+        {% if app.request.pathinfo is same as ('/finished-tasks') %}
+            <h2>Tâches terminées</h2>
+        {% endif %}
+        {% if app.request.pathinfo is same as ('/tasks') %}
+            <h2>Tâches à faire</h2>
+        {% endif %}
+    </div>
+    <div class="row">
         <a href="{{ path('task_create') }}" class="btn btn-info pull-right">Créer une tâche</a>
     </div>
     <div class="row">
