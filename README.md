@@ -4,7 +4,7 @@ ToDoList is a To do list application, running in Symfony framework.
 
 ## Development environment
 PHP 7.4
-MySQL 8.0.25
+MySQL 8.0.26
 Symfony 4.4
 Symfony server
 Linux Ubuntu
