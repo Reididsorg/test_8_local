@@ -4,15 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
-//use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-//class UserController extends Controller
 class UserController extends AbstractController
 {
     /**
@@ -29,7 +26,6 @@ class UserController extends AbstractController
      * @param Request $request
      * @return Response
      */
-//    public function createAction(Request $request)
     public function createAction(UserPasswordEncoderInterface $encoder, Request $request) :Response
     {
         $user = new User();
@@ -38,8 +34,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-//            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
+            $entityManager = $this->getDoctrine()->getManager();
             $password = $encoder->encodePassword($user, $user->getPassword());
 
             $user->setPassword($password);
@@ -53,8 +48,8 @@ class UserController extends AbstractController
                 $user->setRoles(['ROLE_USER']);
             }
 
-            $em->persist($user);
-            $em->flush();
+            $entityManager->persist($user);
+            $entityManager->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
@@ -78,7 +73,6 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            //$password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
             $password = $encoder->encodePassword($user, $user->getPassword());
 
             // Set user role
