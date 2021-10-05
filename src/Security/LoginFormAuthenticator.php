@@ -76,9 +76,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             throw new InvalidCsrfTokenException();
         }
 
-//        dump($credentials);
-//        exit;
-
         //$user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $credentials['username']]);
 
@@ -106,9 +103,18 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
     {
+//        dump($request->getSession());
+//        dump($providerKey);
+//        dump($this->getTargetPath($request->getSession(), $providerKey));
+//        dump($providerKey);
+//        exit;
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
+
+        // After authentication success, redirect to homepage
+        return new RedirectResponse($this->urlGenerator->generate('homepage'));
 
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
         throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
