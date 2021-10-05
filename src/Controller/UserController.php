@@ -40,12 +40,10 @@ class UserController extends AbstractController
             $user->setPassword($password);
 
             // Set user role
+            $user->setRoles(['ROLE_USER']);
             if ($user->getRoles() && $user->getRoles()[0] === 'ROLE_ADMIN')
             {
                 $user->setRoles(['ROLE_ADMIN']);
-            }
-            else {
-                $user->setRoles(['ROLE_USER']);
             }
 
             $entityManager->persist($user);
