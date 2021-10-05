@@ -52,16 +52,13 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
 
-            // Get current user to set appropriate role
+            $task->setUser($this->getUser());
+
+            // Set Anonymous user in non connected user case
             $currentUser = $this->security->getUser();
-            if (is_null($currentUser)) {
-
+            if ($currentUser === null) {
                 $currentUser = $this->getDoctrine()->getRepository('App:User')->findBy(['id' => 3]);
-
                 $task->setUser($currentUser[0]);
-            }
-            else {
-                $task->setUser($this->getUser());
             }
 
             $entityManager->persist($task);
