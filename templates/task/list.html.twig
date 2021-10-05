@@ -22,9 +22,9 @@
                     <h4 class="pull-right">
                         {% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}
                     </h4>
-                    {% if task.user %}
-                        {% dump(task.user.username) %}
-                    {% endif %}
+{#                    {% if task.user %}#}
+{#                        {% dump(task.user.username) %}#}
+{#                    {% endif %}#}
                     <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
                     <p>{{ task.content }}</p>
                     <p>
@@ -44,13 +44,15 @@
                     </form>
                     <form action="{{ path('task_delete', {'id' : task.id }) }}">
                         {% if app.user %}
-                            {% if task.user.roles[0] is same as ('IS_AUTHENTICATED_ANONYMOUSLY') %}
-                                {% if app.user.roles[0] is same as ('ROLE_ADMIN') %}
-                                    <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
-                                {% endif %}
-                            {% else %}
-                                {% if app.user.username is same as(task.user.username) %}
-                                    <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
+                            {% if task.user %}
+                                {% if task.user.roles[0] is same as ('IS_AUTHENTICATED_ANONYMOUSLY') %}
+                                    {% if app.user.roles[0] is same as ('ROLE_ADMIN') %}
+                                        <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
+                                    {% endif %}
+                                {% else %}
+                                    {% if app.user.username is same as(task.user.username) %}
+                                        <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
+                                    {% endif %}
                                 {% endif %}
                             {% endif %}
                         {% endif %}

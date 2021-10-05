@@ -59,7 +59,7 @@
                 {% endif %}
 
                 {% if app.user %}
-                    <a href="{{ path('app_logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
+                    <a href="{{ path('app_logout') }}" class="pull-right btn btn-danger">Deconnecter</a>
                 {% endif %}
 
                 {% if not app.user and 'login' != app.request.attributes.get('_route') %}
@@ -120,13 +120,3 @@
 
     </body>
 </html>
-
-<!-- Debug -->
-{% set currentPath = path(app.request.attributes.get('_route'),
-    app.request.attributes.get('_route_params')) %}
-
-{% block debug %}
-    {% dump(app.session) %}
-    {% dump(app.user) %}
-    {% dump(currentPath) %}
-{% endblock %}
