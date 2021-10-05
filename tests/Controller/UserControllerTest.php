@@ -64,18 +64,6 @@ class UserControllerTest extends WebTestCase
         $this->client->request('GET', '/users/create');
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
-
-
-        $flashBag = $this->createMock(FlashBagInterface::class);
-        $userRepository = $this->createMock(UserRepository::class);
-        $passwordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
-
-        $handler = new UserCreateHandler($flashBag, $userRepository,$passwordEncoder);
-
-        $form = $this->createMock(FormInterface::class);
-        $user = new User();
-
-        $this->assertFalse($handler->handle($form,$user));
     }
 
     public function testEditAction()
