@@ -36,3 +36,4 @@ Open local website in web browser :)
 Find API documentation at : http://yourAdressDomain.local
 
 ## Codacy Badge
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/39e66b9924dd4cc582e8ac17254acfe2)](https://www.codacy.com/gh/Reididsorg/test_8_local/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Reididsorg/test_8_local&amp;utm_campaign=Badge_Grade)
