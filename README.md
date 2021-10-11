@@ -1,5 +1,7 @@
 # TODOLIST
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/eadac161d6d043d6abfe46c6b8ec71d7)](https://app.codacy.com/gh/Reididsorg/test_8_local?utm_source=github.com&utm_medium=referral&utm_content=Reididsorg/test_8_local&utm_campaign=Badge_Grade_Settings)
+
 ToDoList is a To do list application, running in Symfony framework.
 
 ## Development environment
