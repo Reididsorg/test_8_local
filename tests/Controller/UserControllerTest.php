@@ -5,9 +5,7 @@ namespace App\Tests\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use function Zenstruck\Foundry\factory;
 
 class UserControllerTest extends WebTestCase
 {
@@ -61,17 +59,45 @@ class UserControllerTest extends WebTestCase
     {
         $this->loginAdminUser();
 
-        $this->client->request('GET', '/users/create');
-
+        $crawler = $this->client->request('GET', '/users/create');
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['user[username]'] = 'zozo';
+        $form['user[password][first]'] = '1234';
+        $form['user[password][second]'] = '1234';
+        $form['user[email]'] = 'zozo@zozo.fr';
+        $form['user[roles][0]'] = 'ROLE_ADMIN';
+        $this->client->submit($form);
+
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(1, $crawler->filter('div.alert-success')->count());
     }
 
     public function testEditAction()
     {
         $this->loginAdminUser();
 
-        $this->client->request('GET', '/users/3/edit');
-
+        $crawler = $this->client->request('GET', '/users/2/edit');
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Modifier')->form();
+        $form['user[username]'] = 'User';
+        $form['user[password][first]'] = '1234';
+        $form['user[password][second]'] = '1234';
+        $form['user[email]'] = 'user@usermodifie.fr';
+        //$form['user[roles][0]'] = '';
+        $this->client->submit($form);
+
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(1, $crawler->filter('div.alert-success')->count());
     }
 }

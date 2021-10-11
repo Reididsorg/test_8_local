@@ -20,8 +20,17 @@ class TaskControllerTest extends WebTestCase
         $this->client->submit($form, ['_username' => 'Admin', '_password' => '1234']);
     }
 
+    public function testListActionForAnonymous()
+    {
+        $crawler = $this->client->request('GET', '/tasks');
+
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testListAction()
     {
+        $this->loginUser();
+
         $crawler = $this->client->request('GET', '/tasks');
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
@@ -30,11 +39,13 @@ class TaskControllerTest extends WebTestCase
         $this->assertSame(1, $crawler->filter('html:contains("Tâches à faire")')->count());
 
         // Check if the title page tag is correct
-        $this->assertSame(1, $crawler->filter('h2')->count());
+        $this->assertSame(1, $crawler->filter('h1')->count());
     }
 
     public function testListFinishedAction()
     {
+        $this->loginUser();
+
         $this->client->request('GET', '/finished-tasks');
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
@@ -82,6 +93,8 @@ class TaskControllerTest extends WebTestCase
 
     public function testToggleTaskAction()
     {
+        $this->loginUser();
+
         $crawler = $this->client->request('GET', '/tasks/6/toggle');
 
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
@@ -94,6 +107,8 @@ class TaskControllerTest extends WebTestCase
 
     public function testDeleteTaskAction()
     {
+        $this->loginUser();
+
         $crawler = $this->client->request('GET', '/tasks/6/delete');
 
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());

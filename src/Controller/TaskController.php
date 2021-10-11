@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Repository\TaskRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,10 +14,12 @@ use function PHPUnit\Framework\isNan;
 class TaskController extends AbstractController
 {
     public function __construct(
-        Security $security
+        Security $security,
+        TaskRepository $taskRepo
     )
     {
         $this->security = $security;
+        $this->taskRepository = $taskRepo;
     }
 
     /**
@@ -25,7 +28,7 @@ class TaskController extends AbstractController
     public function listAction()
     {
         return $this->render('task/list.html.twig', [
-            'tasks' => $this->getDoctrine()->getRepository('App:Task')->findBy(['isDone' => 0])
+            'tasks' => $this->taskRepository->findBy(['isDone' => 0])
         ]);
     }
 
@@ -35,7 +38,7 @@ class TaskController extends AbstractController
     public function listFinishedAction()
     {
         return $this->render('task/list.html.twig', [
-            'tasks' => $this->getDoctrine()->getRepository('App:Task')->findBy(['isDone' => 1])
+            'tasks' => $this->taskRepository->findBy(['isDone' => 1])
         ]);
     }
 
@@ -53,13 +56,6 @@ class TaskController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
 
             $task->setUser($this->getUser());
-
-            // Set Anonymous user in non connected user case
-            $currentUser = $this->security->getUser();
-            if ($currentUser === null) {
-                $currentUser = $this->getDoctrine()->getRepository('App:User')->findBy(['id' => 3]);
-                $task->setUser($currentUser[0]);
-            }
 
             $entityManager->persist($task);
             $entityManager->flush();
@@ -113,6 +109,17 @@ class TaskController extends AbstractController
      */
     public function deleteTaskAction(Task $task)
     {
+        // Check if logged user is task author
+        $author = $task->getUser();
+        $connectedUser = $this->security->getUser();
+
+        if ($author !== $connectedUser) {
+            throw $this->createNotFoundException(); // Throw a 404 exception ("As if the route doesn't exist")
+            return $this->redirectToRoute('homepage');
+        }
+
+        // Add modal to confirm delete
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($task);
         $entityManager->flush();

@@ -1,0 +1,40 @@
+tests:
+  '.env configuration should not be parsed in production':
+    path:
+      - '/.*'
+    methods:
+      - ANY
+    assertions:
+      - { label: null, expression: 'metrics.symfony.dotenv.parse.count == 0' }
+    exclude: {  }
+
+    'PHP Preloading should be configured':
+      path:
+        - '/.*'
+      methods:
+        - ANY
+      command: '.*'
+      assertions:
+        - { label: null, expression: 'runtime.configuration.opcache_preload != ""' }
+      when: 'is_extension_loaded("zend_opcache")'
+      exclude: {  }
+
+    'The Composer autoloader class map should be dumped in production':
+      path:
+        - '/.*'
+      methods:
+        - ANY
+      command: '.*'
+      assertions:
+        - { label: null, expression: 'metrics.composer.autoload.find_file.count <= 50' }
+      exclude: {  }
+
+recommendations:
+  php.symfony.avoid_dot_env_parsing:
+    enabled: false
+
+  php.php_preloading:
+    enabled: false
+
+  php.dump_composer_autoloader_classmap:
+    enabled: false

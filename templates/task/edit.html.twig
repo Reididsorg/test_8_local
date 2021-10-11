@@ -1,12 +1,24 @@
 {% extends 'base.html.twig' %}
 
+    {% block title %}ToDoList - Editer une tâche{% endblock %}
+    {% block header_title %}{% endblock %}
+    {% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_content.jpg') }}" alt="todo list">{% endblock %}
+
 {% block body %}
+
+    <h1>Edition de la tâche : "{{ task.title }}"</h1>
+
     <div class="row">
-        <p>by {% if task.user.username is null %}Anonyme{% endif %}{{ task.user.username }}</p>
         {{ form_start(form, {'action' : path('task_edit', { 'id' : task.id })}) }}
             {{ form_widget(form) }}
 
-            <button type="submit" class="btn btn-success pull-right">Modifier</button>
+            <button type="submit" class="btn btn-success pull-right" formnovalidate>Modifier</button>
         {{ form_end(form) }}
+        <p>Tâche créée par : <strong>{{ task.user.username }}</strong></p>
     </div>
+
+    <div class="row">
+        <a href="{{ path('task_list') }}" class="btn btn-primary">Retour à la liste des tâches à faire</a>
+    </div>
+
 {% endblock %}
