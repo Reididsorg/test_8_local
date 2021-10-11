@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,12 +13,19 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
+    public function __construct(
+        UserRepository $userRepo
+    )
+    {
+        $this->userRepository = $userRepo;
+    }
+
     /**
      * @Route("/users", name="user_list")
      */
     public function listAction()
     {
-        return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository('App:User')->findAll()]);
+        return $this->render('user/list.html.twig', ['users' => $this->userRepository->findAll()]);
     }
 
     /**
@@ -40,11 +48,7 @@ class UserController extends AbstractController
             $user->setPassword($password);
 
             // Set user role
-            $user->setRoles(['ROLE_USER']);
-            if ($user->getRoles() && $user->getRoles()[0] === 'ROLE_ADMIN')
-            {
-                $user->setRoles(['ROLE_ADMIN']);
-            }
+            $this->setUserRole($user);
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -74,13 +78,7 @@ class UserController extends AbstractController
             $password = $encoder->encodePassword($user, $user->getPassword());
 
             // Set user role
-            if ($user->getRoles() && $user->getRoles()[0] === 'ROLE_ADMIN')
-            {
-                $user->setRoles(['ROLE_ADMIN']);
-            }
-            else {
-                $user->setRoles(['ROLE_USER']);
-            }
+            $this->setUserRole($user);
 
             $user->setPassword($password);
 
@@ -92,5 +90,11 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+    }
+
+    public function setUserRole($user)
+    {
+        $userRole = ($user->getRoles() && $user->getRoles()[0] === 'ROLE_ADMIN') ? $user->setRoles(['ROLE_ADMIN']) : $user->setRoles(['ROLE_USER']);
+        return $userRole;
     }
 }
