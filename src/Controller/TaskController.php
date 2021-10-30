@@ -112,8 +112,8 @@ class TaskController extends AbstractController
         // Check if logged user is task author
         $author = $task->getUser();
         $connectedUser = $this->security->getUser();
-
-        if ($author !== $connectedUser) {
+        
+        if ($author !== $connectedUser && $connectedUser->getRoles()[0] !== 'ROLE_ADMIN') {
             throw $this->createNotFoundException(); // Throw a 404 exception ("As if the route doesn't exist")
             return $this->redirectToRoute('homepage');
         }
